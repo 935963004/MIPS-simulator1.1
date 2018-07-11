@@ -766,19 +766,20 @@ inline void E()
 			Mem.Itype = COMMAND.type;
 			Mem.MUL = false;
 			if (v0 == preReg) WB();
-			preReg = none;
 			hReg = false;
 			switch (reg[v0]) {
 			case 1: {
 				if (a0 == preReg) WB();
 				printf("%d", reg[a0]);
 				Mem.low = 1;
+				preReg = none;
 				break;
 			}
 			case 4: {
 				if (a0 == preReg) WB();
 				for (int i = reg[a0]; Memory[i] != '\0'; ++i) printf("%c", Memory[i]);
 				Mem.low = 4;
+				preReg = none;
 				break;
 			}
 			case 5: {
@@ -819,6 +820,7 @@ inline void E()
 			case 17: {
 				Mem.MUL = true;
 				Mem.low = 17;
+				preReg = none;
 				break;
 			}
 			}
