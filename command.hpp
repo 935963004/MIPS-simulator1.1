@@ -17,7 +17,7 @@ static bool shutdown = false, hReg = false;
 static REGISTER preReg = none;
 struct cmd
 {
-    INSRTUCT type;
+	INSRTUCT type;
 	REGISTER regi[3];
 	int Lable, num, regiSize;
 	bool flag;
@@ -31,15 +31,15 @@ struct command
 struct REG
 {
 	bool MUL;
-    REGISTER Rtype;
-    INSRTUCT Itype;
-    int result, low, high;
+	REGISTER Rtype;
+	INSRTUCT Itype;
+	int result, low, high;
 };
 struct MEM
 {
-    int pos;
-    REGISTER Rtype;
-    INSRTUCT Itype;
+	int pos;
+	REGISTER Rtype;
+	INSRTUCT Itype;
 	int result, low, high;
 	bool MUL;
 };
@@ -157,13 +157,13 @@ void init()
 
 inline command parse(string &s)
 {
-    tokenscanner ts;
-    ts.set(s);
-    command ret;
-    ret.type = insType[ts.nextToken()];
+	tokenscanner ts;
+	ts.set(s);
+	command ret;
+	ret.type = insType[ts.nextToken()];
 	ret.Size = 0;
-    while(ts.hasMoreTokens()) ret.v[ret.Size++] = ts.nextToken();
-    return ret;
+	while (ts.hasMoreTokens()) ret.v[ret.Size++] = ts.nextToken();
+	return ret;
 }
 
 inline void dataExcute(command &CMD)
@@ -257,10 +257,10 @@ inline void E()
 		case addu: {
 			Mem.Itype = COMMAND.type;
 			Mem.Rtype = COMMAND.regi[0];
+			if (COMMAND.regi[1] == preReg) WB();
 			int tmp = reg[COMMAND.regi[1]];
-			if(COMMAND.regi[1] == preReg) WB();
-			if (COMMAND.regiSize == 3){
-				if(COMMAND.regi[2] == preReg) WB();
+			if (COMMAND.regiSize == 3) {
+				if (COMMAND.regi[2] == preReg) WB();
 				Mem.result = tmp + reg[COMMAND.regi[2]];
 			}
 			else Mem.result = tmp + COMMAND.num;
@@ -271,7 +271,7 @@ inline void E()
 		case addiu: {
 			Mem.Itype = COMMAND.type;
 			Mem.Rtype = COMMAND.regi[0];
-			if(COMMAND.regi[1] == preReg) WB();
+			if (COMMAND.regi[1] == preReg) WB();
 			int tmp = reg[COMMAND.regi[1]];
 			Mem.result = tmp + COMMAND.num;
 			preReg = Mem.Rtype;
@@ -282,10 +282,10 @@ inline void E()
 		case subu: {
 			Mem.Itype = COMMAND.type;
 			Mem.Rtype = COMMAND.regi[0];
-			if(COMMAND.regi[1] == preReg) WB();
+			if (COMMAND.regi[1] == preReg) WB();
 			int tmp = reg[COMMAND.regi[1]];
-			if (COMMAND.regiSize == 3){
-				if(COMMAND.regi[2] == preReg) WB();
+			if (COMMAND.regiSize == 3) {
+				if (COMMAND.regi[2] == preReg) WB();
 				Mem.result = tmp - reg[COMMAND.regi[2]];
 			}
 			else Mem.result = tmp - COMMAND.num;
@@ -299,10 +299,10 @@ inline void E()
 			if (COMMAND.regiSize + COMMAND.flag == 3) {
 				Mem.MUL = false;
 				Mem.Rtype = COMMAND.regi[0];
-				if(COMMAND.regi[1] == preReg) WB();
+				if (COMMAND.regi[1] == preReg) WB();
 				int tmp = reg[COMMAND.regi[1]];
-				if (!COMMAND.flag){
-					if(COMMAND.regi[1] == preReg) WB();
+				if (!COMMAND.flag) {
+					if (COMMAND.regi[2] == preReg) WB();
 					Mem.result = tmp * reg[COMMAND.regi[2]];
 				}
 				else Mem.result = tmp * COMMAND.num;
@@ -312,8 +312,8 @@ inline void E()
 			else {
 				Mem.MUL = true;
 				if (!COMMAND.flag) {
-					if(COMMAND.regi[0] == preReg) WB();
-					if(COMMAND.regi[1] == preReg) WB();
+					if (COMMAND.regi[0] == preReg) WB();
+					if (COMMAND.regi[1] == preReg) WB();
 					long long tmp = reg[COMMAND.regi[0]] * reg[COMMAND.regi[1]];
 					Mem.low = tmp;
 					Mem.high = tmp >> 32;
@@ -321,11 +321,11 @@ inline void E()
 					hReg = true;
 				}
 				else {
-					if(COMMAND.regi[0] == preReg) WB();
+					if (COMMAND.regi[0] == preReg) WB();
 					long long tmp = reg[COMMAND.regi[0]] * COMMAND.num;
 					Mem.low = tmp;
 					Mem.high = tmp >> 32;
-					preReg = Mem.Rtype;
+					preReg = lo;
 					hReg = true;
 				}
 			}
@@ -337,10 +337,10 @@ inline void E()
 			if (COMMAND.regiSize + COMMAND.flag == 3) {
 				Mem.MUL = false;
 				Mem.Rtype = COMMAND.regi[0];
-				if(COMMAND.regi[1] == preReg) WB();
+				if (COMMAND.regi[1] == preReg) WB();
 				int tmp = reg[COMMAND.regi[1]];
-				if (!COMMAND.flag){
-					if(COMMAND.regi[2] == preReg) WB();
+				if (!COMMAND.flag) {
+					if (COMMAND.regi[2] == preReg) WB();
 					Mem.result = tmp / reg[COMMAND.regi[2]];
 				}
 				else Mem.result = tmp / COMMAND.num;
@@ -350,21 +350,21 @@ inline void E()
 			else {
 				Mem.MUL = true;
 				if (!COMMAND.flag) {
-					if(COMMAND.regi[0] == preReg) WB();
-					if(COMMAND.regi[1] == preReg) WB();
+					if (COMMAND.regi[0] == preReg) WB();
+					if (COMMAND.regi[1] == preReg) WB();
 					int tmp1 = reg[COMMAND.regi[0]], tmp2 = reg[COMMAND.regi[1]];
 					Mem.low = tmp1 / tmp2;
 					Mem.high = tmp1 % tmp2;
-					preReg = Mem.Rtype;
-					hReg = false;
+					preReg = lo;
+					hReg = true;
 				}
 				else {
-					if(COMMAND.regi[1] == preReg) WB();
+					if (COMMAND.regi[1] == preReg) WB();
 					int tmp1 = reg[COMMAND.regi[0]], tmp2 = COMMAND.num;
 					Mem.low = tmp1 / tmp2;
 					Mem.high = tmp1 % tmp2;
-					preReg = Mem.Rtype;
-					hReg = false;
+					preReg = lo;
+					hReg = true;
 				}
 			}
 			break;
@@ -373,10 +373,10 @@ inline void E()
 		case xoru: {
 			Mem.Itype = COMMAND.type;
 			Mem.Rtype = COMMAND.regi[0];
-			if(COMMAND.regi[1] == preReg) WB();
+			if (COMMAND.regi[1] == preReg) WB();
 			int tmp = reg[COMMAND.regi[1]];
-			if (!COMMAND.flag){
-				if(COMMAND.regi[2] == preReg) WB();
+			if (!COMMAND.flag) {
+				if (COMMAND.regi[2] == preReg) WB();
 				Mem.result = tmp ^ reg[COMMAND.regi[2]];
 			}
 			else Mem.result = tmp ^ COMMAND.num;
@@ -387,8 +387,10 @@ inline void E()
 		case neg: {
 			Mem.Itype = COMMAND.type;
 			Mem.Rtype = COMMAND.regi[0];
-			if(COMMAND.regi[1] == preReg) WB();
-			if (!COMMAND.flag) Mem.result = -reg[COMMAND.regi[1]];
+			if (!COMMAND.flag) {
+				if (COMMAND.regi[1] == preReg) WB();
+				Mem.result = -reg[COMMAND.regi[1]];
+			}
 			else Mem.result = -COMMAND.num;
 			preReg = Mem.Rtype;
 			hReg = false;
@@ -397,8 +399,10 @@ inline void E()
 		case negu: {
 			Mem.Itype = COMMAND.type;
 			Mem.Rtype = COMMAND.regi[0];
-			if(COMMAND.regi[1] == preReg) WB();
-			if (!COMMAND.flag) Mem.result = ~reg[COMMAND.regi[1]];
+			if (!COMMAND.flag) {
+			if (COMMAND.regi[1] == preReg) WB();
+				Mem.result = ~reg[COMMAND.regi[1]];
+			}
 			else Mem.result = ~COMMAND.num;
 			preReg = Mem.Rtype;
 			hReg = false;
@@ -408,10 +412,10 @@ inline void E()
 		case remu: {
 			Mem.Itype = COMMAND.type;
 			Mem.Rtype = COMMAND.regi[0];
-			if(COMMAND.regi[1] == preReg) WB();
+			if (COMMAND.regi[1] == preReg) WB();
 			int tmp = reg[COMMAND.regi[1]];
-			if (!COMMAND.flag){
-				if(COMMAND.regi[2] == preReg) WB();
+			if (!COMMAND.flag) {
+				if (COMMAND.regi[2] == preReg) WB();
 				Mem.result = tmp % reg[COMMAND.regi[2]];
 			}
 			else Mem.result = tmp % COMMAND.num;
@@ -439,10 +443,10 @@ inline void E()
 		case seq: {
 			Mem.Itype = COMMAND.type;
 			Mem.Rtype = COMMAND.regi[0];
-			if(COMMAND.regi[1] == preReg) WB();
+			if (COMMAND.regi[1] == preReg) WB();
 			int tmp = reg[COMMAND.regi[1]];
-			if (!COMMAND.flag){
-				if(COMMAND.regi[2] == preReg) WB();
+			if (!COMMAND.flag) {
+				if (COMMAND.regi[2] == preReg) WB();
 				Mem.result = tmp == reg[COMMAND.regi[2]];
 			}
 			else Mem.result = tmp == COMMAND.num;
@@ -453,10 +457,10 @@ inline void E()
 		case sge: {
 			Mem.Itype = COMMAND.type;
 			Mem.Rtype = COMMAND.regi[0];
-			if(COMMAND.regi[1] == preReg) WB();
+			if (COMMAND.regi[1] == preReg) WB();
 			int tmp = reg[COMMAND.regi[1]];
-			if (!COMMAND.flag){
-				if(COMMAND.regi[2] == preReg) WB();
+			if (!COMMAND.flag) {
+				if (COMMAND.regi[2] == preReg) WB();
 				Mem.result = tmp >= reg[COMMAND.regi[2]];
 			}
 			else Mem.result = tmp >= COMMAND.num;
@@ -467,10 +471,10 @@ inline void E()
 		case sgt: {
 			Mem.Itype = COMMAND.type;
 			Mem.Rtype = COMMAND.regi[0];
-			if(COMMAND.regi[1] == preReg) WB();
+			if (COMMAND.regi[1] == preReg) WB();
 			int tmp = reg[COMMAND.regi[1]];
-			if (!COMMAND.flag){
-				if(COMMAND.regi[2] == preReg) WB();
+			if (!COMMAND.flag) {
+				if (COMMAND.regi[2] == preReg) WB();
 				Mem.result = tmp > reg[COMMAND.regi[2]];
 			}
 			else Mem.result = tmp > COMMAND.num;
@@ -481,10 +485,10 @@ inline void E()
 		case sle: {
 			Mem.Itype = COMMAND.type;
 			Mem.Rtype = COMMAND.regi[0];
-			if(COMMAND.regi[1] == preReg) WB();
+			if (COMMAND.regi[1] == preReg) WB();
 			int tmp = reg[COMMAND.regi[1]];
-			if (!COMMAND.flag){
-				if(COMMAND.regi[2] == preReg) WB();
+			if (!COMMAND.flag) {
+				if (COMMAND.regi[2] == preReg) WB();
 				Mem.result = tmp <= reg[COMMAND.regi[2]];
 			}
 			else Mem.result = tmp <= COMMAND.num;
@@ -495,10 +499,10 @@ inline void E()
 		case slt: {
 			Mem.Itype = COMMAND.type;
 			Mem.Rtype = COMMAND.regi[0];
-			if(COMMAND.regi[1] == preReg) WB();
+			if (COMMAND.regi[1] == preReg) WB();
 			int tmp = reg[COMMAND.regi[1]];
-			if (!COMMAND.flag){
-				if(COMMAND.regi[2] == preReg) WB();
+			if (!COMMAND.flag) {
+				if (COMMAND.regi[2] == preReg) WB();
 				Mem.result = tmp < reg[COMMAND.regi[2]];
 			}
 			else Mem.result = tmp < COMMAND.num;
@@ -509,10 +513,10 @@ inline void E()
 		case sne: {
 			Mem.Itype = COMMAND.type;
 			Mem.Rtype = COMMAND.regi[0];
-			if(COMMAND.regi[1] == preReg) WB();
+			if (COMMAND.regi[1] == preReg) WB();
 			int tmp = reg[COMMAND.regi[1]];
-			if (!COMMAND.flag){
-				if(COMMAND.regi[2] == preReg) WB();
+			if (!COMMAND.flag) {
+				if (COMMAND.regi[2] == preReg) WB();
 				Mem.result = tmp != reg[COMMAND.regi[2]];
 			}
 			else Mem.result = tmp != COMMAND.num;
@@ -533,10 +537,10 @@ inline void E()
 			Mem.Itype = COMMAND.type;
 			Mem.Rtype = pc;
 			Mem.result = COMMAND.Lable;
-			if(COMMAND.regi[0] == preReg) WB();
+			if (COMMAND.regi[0] == preReg) WB();
 			int tmp = reg[COMMAND.regi[0]];
-			if (!COMMAND.flag){
-				if(COMMAND.regi[1] == preReg) WB();
+			if (!COMMAND.flag) {
+				if (COMMAND.regi[1] == preReg) WB();
 				Mem.MUL = tmp == reg[COMMAND.regi[1]];
 			}
 			else Mem.MUL = tmp == COMMAND.num;
@@ -548,10 +552,10 @@ inline void E()
 			Mem.Itype = COMMAND.type;
 			Mem.Rtype = pc;
 			Mem.result = COMMAND.Lable;
-			if(COMMAND.regi[0] == preReg) WB();
+			if (COMMAND.regi[0] == preReg) WB();
 			int tmp = reg[COMMAND.regi[0]];
-			if (!COMMAND.flag){
-				if(COMMAND.regi[1] == preReg) WB();
+			if (!COMMAND.flag) {
+				if (COMMAND.regi[1] == preReg) WB();
 				Mem.MUL = tmp != reg[COMMAND.regi[1]];
 			}
 			else Mem.MUL = tmp != COMMAND.num;
@@ -563,10 +567,10 @@ inline void E()
 			Mem.Itype = COMMAND.type;
 			Mem.Rtype = pc;
 			Mem.result = COMMAND.Lable;
-			if(COMMAND.regi[0] == preReg) WB();
+			if (COMMAND.regi[0] == preReg) WB();
 			int tmp = reg[COMMAND.regi[0]];
-			if (!COMMAND.flag){
-				if(COMMAND.regi[1] == preReg) WB();
+			if (!COMMAND.flag) {
+				if (COMMAND.regi[1] == preReg) WB();
 				Mem.MUL = tmp >= reg[COMMAND.regi[1]];
 			}
 			else Mem.MUL = tmp >= COMMAND.num;
@@ -578,10 +582,10 @@ inline void E()
 			Mem.Itype = COMMAND.type;
 			Mem.Rtype = pc;
 			Mem.result = COMMAND.Lable;
-			if(COMMAND.regi[0] == preReg) WB();
+			if (COMMAND.regi[0] == preReg) WB();
 			int tmp = reg[COMMAND.regi[0]];
-			if (!COMMAND.flag){
-				if(COMMAND.regi[1] == preReg) WB();
+			if (!COMMAND.flag) {
+				if (COMMAND.regi[1] == preReg) WB();
 				Mem.MUL = tmp <= reg[COMMAND.regi[1]];
 			}
 			else Mem.MUL = tmp <= COMMAND.num;
@@ -593,10 +597,10 @@ inline void E()
 			Mem.Itype = COMMAND.type;
 			Mem.Rtype = pc;
 			Mem.result = COMMAND.Lable;
-			if(COMMAND.regi[0] == preReg) WB();
+			if (COMMAND.regi[0] == preReg) WB();
 			int tmp = reg[COMMAND.regi[0]];
-			if (!COMMAND.flag){
-				if(COMMAND.regi[1] == preReg) WB();
+			if (!COMMAND.flag) {
+				if (COMMAND.regi[1] == preReg) WB();
 				Mem.MUL = tmp > reg[COMMAND.regi[1]];
 			}
 			else Mem.MUL = tmp > COMMAND.num;
@@ -608,10 +612,10 @@ inline void E()
 			Mem.Itype = COMMAND.type;
 			Mem.Rtype = pc;
 			Mem.result = COMMAND.Lable;
-			if(COMMAND.regi[0] == preReg) WB();
+			if (COMMAND.regi[0] == preReg) WB();
 			int tmp = reg[COMMAND.regi[0]];
-			if (!COMMAND.flag){
-				if(COMMAND.regi[1] == preReg) WB();
+			if (!COMMAND.flag) {
+				if (COMMAND.regi[1] == preReg) WB();
 				Mem.MUL = tmp < reg[COMMAND.regi[1]];
 			}
 			else Mem.MUL = tmp < COMMAND.num;
@@ -623,7 +627,7 @@ inline void E()
 			Mem.Itype = COMMAND.type;
 			Mem.Rtype = pc;
 			Mem.result = COMMAND.Lable;
-			if(COMMAND.regi[0] == preReg) WB();
+			if (COMMAND.regi[0] == preReg) WB();
 			Mem.MUL = reg[COMMAND.regi[0]] == 0;
 			preReg = Mem.Rtype;
 			hReg = false;
@@ -633,7 +637,7 @@ inline void E()
 			Mem.Itype = COMMAND.type;
 			Mem.Rtype = pc;
 			Mem.result = COMMAND.Lable;
-			if(COMMAND.regi[0] == preReg) WB();
+			if (COMMAND.regi[0] == preReg) WB();
 			Mem.MUL = reg[COMMAND.regi[0]] != 0;
 			preReg = Mem.Rtype;
 			hReg = false;
@@ -643,7 +647,7 @@ inline void E()
 			Mem.Itype = COMMAND.type;
 			Mem.Rtype = pc;
 			Mem.result = COMMAND.Lable;
-			if(COMMAND.regi[0] == preReg) WB();
+			if (COMMAND.regi[0] == preReg) WB();
 			Mem.MUL = reg[COMMAND.regi[0]] <= 0;
 			preReg = Mem.Rtype;
 			hReg = false;
@@ -653,7 +657,7 @@ inline void E()
 			Mem.Itype = COMMAND.type;
 			Mem.Rtype = pc;
 			Mem.result = COMMAND.Lable;
-			if(COMMAND.regi[0] == preReg) WB();
+			if (COMMAND.regi[0] == preReg) WB();
 			Mem.MUL = reg[COMMAND.regi[0]] >= 0;
 			preReg = Mem.Rtype;
 			hReg = false;
@@ -663,7 +667,7 @@ inline void E()
 			Mem.Itype = COMMAND.type;
 			Mem.Rtype = pc;
 			Mem.result = COMMAND.Lable;
-			if(COMMAND.regi[0] == preReg) WB();
+			if (COMMAND.regi[0] == preReg) WB();
 			Mem.MUL = reg[COMMAND.regi[0]] > 0;
 			preReg = Mem.Rtype;
 			hReg = false;
@@ -673,7 +677,7 @@ inline void E()
 			Mem.Itype = COMMAND.type;
 			Mem.Rtype = pc;
 			Mem.result = COMMAND.Lable;
-			if(COMMAND.regi[0] == preReg) WB();
+			if (COMMAND.regi[0] == preReg) WB();
 			Mem.MUL = reg[COMMAND.regi[0]] < 0;
 			preReg = Mem.Rtype;
 			hReg = false;
@@ -682,7 +686,7 @@ inline void E()
 		case jr: {
 			Mem.Itype = COMMAND.type;
 			Mem.Rtype = pc;
-			if(COMMAND.regi[0] == preReg) WB();
+			if (COMMAND.regi[0] == preReg) WB();
 			Mem.result = reg[COMMAND.regi[0]];
 			preReg = Mem.Rtype;
 			hReg = false;
@@ -700,7 +704,7 @@ inline void E()
 		case jalr: {
 			Mem.Itype = COMMAND.type;
 			Mem.Rtype = pc;
-			if(COMMAND.regi[0] == preReg) WB();
+			if (COMMAND.regi[0] == preReg) WB();
 			Mem.result = reg[COMMAND.regi[0]];
 			Mem.low = reg[pc];
 			preReg = ra;
@@ -716,11 +720,11 @@ inline void E()
 			Mem.Itype = COMMAND.type;
 			Mem.Rtype = COMMAND.regi[0];
 			if (COMMAND.regiSize == 1) Mem.pos = COMMAND.Lable;
-			else{
-				if(COMMAND.regi[1] == preReg) WB();
+			else {
+				if (COMMAND.regi[1] == preReg) WB();
 				Mem.pos = COMMAND.num + reg[COMMAND.regi[1]];
 			}
-			if(Mem.Itype == lb || Mem.Itype == lh || Mem.Itype == lw) preReg = Mem.Rtype;
+			if (Mem.Itype == lb || Mem.Itype == lh || Mem.Itype == lw) preReg = Mem.Rtype;
 			else preReg = none;
 			hReg = false;
 			break;
@@ -728,7 +732,7 @@ inline void E()
 		case Move: {
 			Mem.Itype = COMMAND.type;
 			Mem.Rtype = COMMAND.regi[0];
-			if(COMMAND.regi[1] == preReg) WB();
+			if (COMMAND.regi[1] == preReg) WB();
 			Mem.result = reg[COMMAND.regi[1]];
 			preReg = Mem.Rtype;
 			hReg = false;
@@ -737,7 +741,7 @@ inline void E()
 		case mfhi: {
 			Mem.Itype = COMMAND.type;
 			Mem.Rtype = COMMAND.regi[0];
-			if(hi == preReg) WB();
+			if (hReg) WB();
 			Mem.result = reg[hi];
 			preReg = Mem.Rtype;
 			hReg = false;
@@ -746,7 +750,7 @@ inline void E()
 		case mflo: {
 			Mem.Itype = COMMAND.type;
 			Mem.Rtype = COMMAND.regi[0];
-			if(lo == preReg) WB();
+			if (lo == preReg) WB();
 			Mem.result = reg[lo];
 			preReg = Mem.Rtype;
 			hReg = false;
@@ -761,17 +765,18 @@ inline void E()
 		case syscall: {
 			Mem.Itype = COMMAND.type;
 			Mem.MUL = false;
+			if (v0 == preReg) WB();
 			preReg = none;
 			hReg = false;
 			switch (reg[v0]) {
 			case 1: {
-				if(a0 == preReg) WB();
+				if (a0 == preReg) WB();
 				printf("%d", reg[a0]);
 				Mem.low = 1;
 				break;
 			}
 			case 4: {
-				if(a0 == preReg) WB();
+				if (a0 == preReg) WB();
 				for (int i = reg[a0]; Memory[i] != '\0'; ++i) printf("%c", Memory[i]);
 				Mem.low = 4;
 				break;
@@ -782,12 +787,13 @@ inline void E()
 				Mem.Rtype = v0;
 				Mem.result = tmp;
 				Mem.low = 5;
+				preReg = v0;
 				break;
 			}
 			case 8: {
 				char c = getchar();
 				if (c == '\n') c = getchar();
-				if(a0 == preReg) WB();
+				if (a0 == preReg) WB();
 				int i = reg[a0];
 				while (c != '\0' && c != '\n' && c != -1) {
 					Memory[i++] = c;
@@ -797,14 +803,16 @@ inline void E()
 				Mem.Rtype = a1;
 				Mem.result = i - reg[a0];
 				Mem.low = 8;
+				preReg = a1;
 				break;
 			}
 			case 9: {
 				Mem.Rtype = v0;
 				Mem.result = heapLen;
 				Mem.low = 9;
-				if(a0 == preReg) WB();
+				if (a0 == preReg) WB();
 				heapLen += reg[a0];
+				preReg = v0;
 				break;
 			}
 			case 10:
@@ -882,11 +890,6 @@ inline void MA()
 			break;
 		}
 		case nop: {
-			Reg.Itype = Mem.Itype;
-			break;
-		}
-		case syscall: {
-			if (Mem.MUL) shutdown = true;
 			Reg.Itype = Mem.Itype;
 			break;
 		}
